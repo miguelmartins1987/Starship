@@ -1848,6 +1848,15 @@ void Audio_ResetSfx(void) {
 }
 
 void Audio_PlayVoice(s32 msgId) {
+    if (LibRawVoice_IsVoiceRegistered(msgId))
+    {
+        LibRawVoice_SetCurrentVoiceId(msgId);
+        return;
+    }
+    if (msgId == 0)
+    {
+        LibRawVoice_SetCurrentVoiceId(0);
+    }
     sCurrentVoiceId = sNextVoiceId = msgId;
     sSetNextVoiceId = true;
 }
@@ -1882,6 +1891,7 @@ void Audio_UpdateVoice(void) {
 }
 
 void Audio_ClearVoice(void) {
+    LibRawVoice_SetCurrentVoiceId(0);
     sCurrentVoiceId = 0;
     sNextVoiceId = 1;
     sSetNextVoiceId = true;
@@ -1890,7 +1900,10 @@ void Audio_ClearVoice(void) {
 s32 Audio_GetCurrentVoice(void) {
     // LAudioTODO: Stub for now
     // return 0;
-
+    if (LibRawVoice_GetCurrentVoiceId() > 0) {
+        return LibRawVoice_GetCurrentVoiceId();
+    }
+    
     if (!IS_SEQUENCE_CHANNEL_VALID(gSeqPlayers[SEQ_PLAYER_VOICE].channels[15])) {
         return 0;
     }
@@ -1907,6 +1920,9 @@ s32 Audio_GetCurrentVoice(void) {
 s32 Audio_GetCurrentVoiceStatus(void) {
     // LAudioTODO: Stub for now
     // return 1;
+    if (LibRawVoice_GetCurrentVoiceId() > 0) {
+        return LibRawVoice_GetCurrentVoiceStatus();
+    }
 
     SequenceChannel* channel = gSeqPlayers[SEQ_PLAYER_VOICE].channels[15];
     SequenceLayer* layer = channel->layers[0];
@@ -2189,6 +2205,7 @@ void Audio_ResetVoicesAndPlayers(void) {
     }
     sSfxFreqMod = 1.0f;
     sSfxVolMod = 1.0f;
+    LibRawVoice_SetCurrentVoiceId(0);
     sNextVoiceId = 0;
     sCurrentVoiceId = 0;
     sSetNextVoiceId = 0;

@@ -1,6 +1,10 @@
 [comment]: <> (Todo: Make Light Mode Image)
 [comment]: <> (Todo: Make Dark Mode Image)
 
+Fork of Starship by miguelmartins1987, which allows for modding voices within the game.
+
+Every voice is located at raw/voice/\<voice id\>.raw
+
 # Starship
 
 Lead Developers: 

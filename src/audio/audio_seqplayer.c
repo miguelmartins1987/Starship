@@ -1519,6 +1519,10 @@ void AudioSeq_SequencePlayerProcessSequence(SequencePlayer* seqPlayer) {
 
     for (i = 0; i < SEQ_NUM_CHANNELS; i++) {
         if (IS_SEQUENCE_CHANNEL_VALID(seqPlayer->channels[i]) == 1) {
+            if (i == 15 && LibRawVoice_GetCurrentVoiceId() > 0)
+            {
+                continue;
+            }
             AudioSeq_SequenceChannelProcessScript(seqPlayer->channels[i]);
         }
     }
