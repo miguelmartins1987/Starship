@@ -355,6 +355,7 @@ void GameEngine::StartFrame() const {
 
 extern "C" u16 audBuffer = 0;
 #include <sf64audio_provisional.h>
+#include <librawvoice/librawvoice.h>
 
 extern "C" volatile s32 gAudioTaskCountQ;
 int frames = 0;
@@ -406,6 +407,26 @@ void GameEngine::HandleAudioThread() {
                           num_audio_samples * (sizeof(int16_t) * num_audio_channels * AUDIO_FRAMES_PER_UPDATE));
         }
 #endif
+        std::vector<int16_t> voice_samples;
+        if (LibRawVoice_GetCurrentVoiceId() > 0)
+        {
+            voice_samples = LibRawVoice_GetNextVoiceSamples(num_audio_samples * num_audio_channels * AUDIO_FRAMES_PER_UPDATE);
+        }
+        if (!voice_samples.empty())
+        {
+            float voice_volume = CVarGetFloat("gVoiceVolume", 1.0f);
+            for (size_t i = 0; i < voice_samples.size(); i++) {
+                int32_t combined_sample = (int32_t)audio_buffer[i] + (int32_t)(voice_samples[i] * voice_volume);
+                if (combined_sample > SHRT_MAX) {
+                    combined_sample = SHRT_MAX;
+                }
+                if (combined_sample < SHRT_MIN) {
+                    combined_sample = SHRT_MIN;
+                }
+                audio_buffer[i] = (int16_t)combined_sample;
+            }
+        }
+        LibRawVoice_SetCurrentSamples(voice_samples);
         AudioPlayerPlayFrame((u8*) audio_buffer,
                              num_audio_samples * (sizeof(int16_t) * num_audio_channels * AUDIO_FRAMES_PER_UPDATE));
         
@@ -435,6 +456,7 @@ void GameEngine::EndAudioFrame() {
 }
 
 void GameEngine::AudioInit() {
+    LibRawVoice_Initialize("raw/voice");
     if (!audio.running) {
         audio.running = true;
         audio.thread = std::thread(HandleAudioThread);
