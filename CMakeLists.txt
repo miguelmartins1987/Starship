@@ -134,6 +134,7 @@ file(GLOB_RECURSE ALL_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
     "src/audio/*.h"
     "src/engine/*.c"
     "src/engine/*.h"
+    "src/librawvoice/*.cpp"
     "src/libultra/io/aisetfreq.c"
     "src/libultra/gu/sqrtf.c"
     "src/libultra/gu/mtxutil.c"
