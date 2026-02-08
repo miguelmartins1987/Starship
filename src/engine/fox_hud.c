@@ -2718,6 +2718,7 @@ void HUD_Texture_Scroll(u8* texturePtr, s32 xPos, s32 yPos, u8 type) {
         default:
             break;
     }
+    gSPInvalidateTexCache(gMasterDisp++, texture);
 }
 
 void HUD_Texture_Wave(u16* srcTexture, u16* dstTexture) {
@@ -3875,6 +3876,8 @@ s32 FoBase_ExplodeCs(FoBase* this) {
                 Math_SmoothStepToF(&this->fwork[4], this->obj.pos.x + 0.0f, 0.02f, 10000.0f, 0.0f);
                 Math_SmoothStepToF(&this->fwork[5], this->obj.pos.y + 500.0f, 0.02f, 10000.0f, 0.0f);
                 Math_SmoothStepToF(&this->fwork[6], this->obj.pos.z + 1500.0f, 0.02f, 10000.0f, 0.0f);
+                // @port: Add rumble to this cutscene
+                gControllerRumbleTimers[0] = 60;
                 break;
 
             case 2:
@@ -3890,6 +3893,8 @@ s32 FoBase_ExplodeCs(FoBase* this) {
                 Math_SmoothStepToF(&this->fwork[4], this->obj.pos.x + 0.0f, 0.02f, 10000.0f, 0.0f);
                 Math_SmoothStepToF(&this->fwork[5], this->obj.pos.y + 1500.0f, 0.02f, 10000.0f, 0.0f);
                 Math_SmoothStepToF(&this->fwork[6], this->obj.pos.z + 1500.0f, 0.02f, 10000.0f, 0.0f);
+                // @port: Add rumble to this cutscene
+                gControllerRumbleTimers[0] = 60;
                 break;
 
             case 3:
