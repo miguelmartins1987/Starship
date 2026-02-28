@@ -2197,6 +2197,10 @@ s32 HUD_RadarMarks_Update(void) {
         }
 
         Matrix_Push(&gGfxMatrix);
+
+        // @port: Tag the transform.
+        FrameInterpolation_RecordOpenChild(&gRadarMarks[i], i);
+
         Matrix_Translate(gGfxMatrix, gRadarMarks[i].pos.x * 0.008f, -gRadarMarks[i].pos.z * 0.008f, 0.0f, MTXF_APPLY);
 
         if (gRadarMarks[i].type == 103) {
@@ -2208,6 +2212,10 @@ s32 HUD_RadarMarks_Update(void) {
         Matrix_SetGfxMtx(&gMasterDisp);
 
         HUD_RadarMark_Draw(gRadarMarks[i].type);
+
+        // @port Pop the transform id.
+        FrameInterpolation_RecordCloseChild();
+
         Matrix_Pop(&gGfxMatrix);
 
         gRadarMarks[i].enabled = false;
@@ -2222,7 +2230,7 @@ s32 ActorMissileSeek_ModeCheck(ActorMissileSeekMode mode) {
     s32 i;
     s32 ret = 0;
 
-    for (i = 0, actor = &gActors[0]; i < 60; i++, actor++) {
+    for (i = 0, actor = &gActors[0]; i < ARRAY_COUNT(gActors); i++, actor++) {
         switch (mode) {
             case MISSILE_SEEK_TEAMMATES:
                 if ((actor->obj.status == OBJ_ACTIVE) && (actor->obj.id == OBJ_ACTOR_MISSILE_SEEK_TEAM)) {
